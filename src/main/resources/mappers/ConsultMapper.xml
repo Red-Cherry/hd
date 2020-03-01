@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sjx.hangduo.dao.other.ConsultMapper">
+
+
+    <resultMap id="selectAllConsult" type="com.sjx.hangduo.model.vo.ConsultUserVO">
+        <id property="consultId" column="consult_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userPhone" column="user_phone"/>
+        <result property="consultContent" column="consult_content"/>
+        <result property="consultCreateTime" column="consult_createtime"/>
+    </resultMap>
+
+    <select id="selectAllConsult" resultMap="selectAllConsult">
+        SELECT c.consult_id, c.consult_content, c.consult_createtime, u.user_name, u.user_phone
+        FROM consult c
+        JOIN `user` u ON c.clause_foreign_key = u.user_id
+        WHERE u.user_delete_status = 1
+    </select>
+    <delete id="deleteConsultById">
+        delete from consult where consult_id = #{id}
+    </delete>
+</mapper>

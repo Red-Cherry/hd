@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjx.hangduo.dao.law.ClauseMapper">
+
+    <resultMap id="selectAllClause" type="com.sjx.hangduo.model.vo.ClauseRegDirVo">
+        <id property="clauseId" column="clause_id"/>
+        <result property="directoryForeignKey" column="directory_foreign_key"/>
+        <result property="regForeignKey" column="reg_foreign_key"/>
+        <result property="clauseNo" column="clause_no"/>
+        <result property="clauseNoAlias" column="clause_no_alias"/>
+        <result property="clauseVersion" column="clause_version"/>
+        <result property="clauseTitle" column="clause_title"/>
+        <result property="clauseContent" column="clause_content"/>
+        <result property="clauseKeywords" column="clause_keywords"/>
+        <result property="regulationsName" column="regulations_name"/>
+        <result property="directoryName" column="directory_name"/>
+    </resultMap>
+
+    <sql id="selectAllClause">
+        c.clause_id, c.directory_foreign_key, c.reg_foreign_key,
+       c.clause_no, c.clause_no_alias, c.clause_version,
+       c.clause_title, c.clause_content, c.clause_keywords,
+       r.regulations_id, r.regulations_name, d.directory_id,
+       d.directory_name
+    </sql>
+
+    <insert id="insertClause">
+        INSERT INTO `clause`
+        (`directory_foreign_key`, `reg_foreign_key`, `clause_no`, `clause_no_alias`, `clause_version`, `clause_title`, `clause_content`, `clause_keywords`, `clause_createtime`)
+        VALUES
+        (#{directoryForeignKey}, #{regForeignKey}, #{clauseNo}, #{clauseNoAlias}, #{clauseVersion}, #{clauseTitle}, #{clauseContent}, #{clauseKeywords}, SYSDATE());
+    </insert>
+    <select id="selectAllClause" resultMap="selectAllClause">
+        select
+        <include refid="selectAllClause"/>
+        from clause c
+        join regulations r on r.regulations_id = c.reg_foreign_key
+        join directory d on d.directory_id = c.directory_foreign_key
+    </select>
+    <delete id="deleteClauseById">
+        delete from clause where clause_id = #{id}
+    </delete>
+    <select id="selectClauseById" resultMap="selectAllClause">
+        select
+        <include refid="selectAllClause"/>
+        from clause c
+        join regulations r on r.regulations_id = c.reg_foreign_key
+        join directory d on d.directory_id = c.directory_foreign_key
+        where c.clause_id = #{id}
+    </select>
+    <update id="updateClause">
+        update clause set
+        reg_foreign_key = #{clause.regForeignKey},
+        directory_foreign_key = #{clause.directoryForeignKey},
+        clause_no = #{clause.clauseNo},
+        clause_no_alias = #{clause.clauseNoAlias},
+        clause_version = #{clause.clauseVersion},
+        clause_title = #{clause.clauseTitle},
+        clause_keywords = #{clause.clauseKeywords},
+        clause_content = #{clause.clauseContent},
+        clause_updatetime = SYSDATE()
+        where clause_id = #{clause.clauseId}
+    </update>
+
+</mapper>

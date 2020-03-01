@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjx.hangduo.dao.law.RegulationsMapper">
+    <resultMap id="selectAllRegulations" type="com.sjx.hangduo.model.vo.RegTypeVO">
+        <id property="regulationsId" column="regulations_id"/>
+        <result property="regulationsPartNo" column="regulations_part_no"/>
+        <result property="regulationsPartNoAlias" column="regulations_part_no_alias"/>
+        <result property="regulationsVersion" column="regulations_version"/>
+        <result property="regulationsName" column="regulations_name"/>
+        <result property="regulationsShowStatus" column="regulations_show_status"/>
+        <result property="typeName" column="type_name"/>
+    </resultMap>
+    <select id="selectAllRegulations" resultMap="selectAllRegulations">
+        select r.regulations_id, r.regulations_part_no, r.regulations_part_no_alias, r.regulations_version,
+        r.regulations_name, r.regulations_show_status, t.type_name from
+        regulations r join regulations_type t on r.type_id = t.id
+    </select>
+    <insert id="insertRegulations" parameterType="com.sjx.hangduo.model.entity.Regulations">
+        insert into regulations (regulations_part_no, regulations_part_no_alias, regulations_version, regulations_name,
+        regulations_show_status, regulations_pdf_name, regulations_pdf_path,
+        regulations_version_explain, regulations_createtime, type_id)
+        values
+        (#{reg.regulationsPartNo}, #{reg.regulationsPartNoAlias}, #{reg.regulationsVersion}, #{reg.regulationsName},
+        #{reg.regulationsShowStatus}, #{reg.regulationsPdfName}, #{reg.regulationsPdfPath},
+        #{reg.regulationsVersionExplain}, SYSDATE(), #{reg.typeId});
+    </insert>
+</mapper>

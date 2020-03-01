@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjx.hangduo.dao.user.AdminMapper">
+
+    <resultMap id="selectAllAdmin" type="com.sjx.hangduo.model.entity.Admin">
+        <id property="adminId" column="admin_id"/>
+        <result property="adminPhone" column="admin_phone"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="adminCreateTime" column="admin_createtime"/>
+        <result property="adminDeleteStatus" column="admin_delete_status"/>
+        <result property="adminPassword" column="admin_password"/>
+        <result property="adminType" column="admin_type"/>
+    </resultMap>
+
+    <sql id="selectAllAdmin">
+        admin_id, admin_phone, admin_name, admin_createtime, admin_delete_status, admin_password, admin_type
+    </sql>
+
+    <select id="selectAllAdmin" resultMap="selectAllAdmin">
+        SELECT
+        <include refid="selectAllAdmin"/>
+        FROM admin
+    </select>
+    
+    <insert id="insertAdmin">
+        insert into admin
+        (admin_phone, admin_name, admin_createtime, admin_password)
+        values
+        (#{admin.adminPhone},#{admin.adminName}, SYSDATE(), #{admin.adminPassword})
+    </insert>
+    <update id="updateAdmin">
+        update admin set
+        admin_phone = #{admin.adminPhone},
+        admin_name = #{admin.adminName},
+        admin_password = #{admin.adminPassword}
+        where admin_id = #{admin.adminId}
+    </update>
+    <delete id="deleteAdmin">
+        delete from admin where admin_id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjx.hangduo.dao.other.WebSettingMapper">
+
+    <resultMap id="selectWeb" type="com.sjx.hangduo.model.entity.WebSetting">
+        <result property="webStatus" column="web_status"/>
+        <result property="webTitle" column="web_title"/>
+        <result property="webDomainName" column="web_domain_name"/>
+        <result property="webLogoPath" column="web_logo_path"/>
+        <result property="webEmail" column="web_email"/>
+        <result property="language" column="language"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap" type="com.sjx.hangduo.model.entity.Email">
+        <id column="smtp_id" jdbcType="INTEGER" property="SMTPId" />
+        <result column="smtp_email" jdbcType="VARCHAR" property="SMTPEmail" />
+        <result column="smtp_server" jdbcType="VARCHAR" property="SMTPServer" />
+        <result column="smtp_username" jdbcType="VARCHAR" property="SMTPUsername" />
+        <result column="smtp_password" jdbcType="VARCHAR" property="SMTPPassword" />
+        <result column="number" jdbcType="INTEGER" property="number" />
+        <result column="login_type" jdbcType="VARCHAR" property="loginType" />
+    </resultMap>
+
+    <resultMap id="selectFeedback" type="com.sjx.hangduo.model.entity.Feedback">
+        <id property="feedbackId" column="feedback_id"/>
+        <result property="feedbackContent" column="feedback_content"/>
+        <result property="userForeignKey" column="user_foreign_key"/>
+        <result property="feedbackCreateTime" column="feedback_createtime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        smtp_id, smtp_email, smtp_server, smtp_username, smtp_password, `number`, login_type
+    </sql>
+
+    <sql id="selectFeedback">
+        feedback_id, feedback_content, user_foreign_key, feedback_createtime
+    </sql>
+
+    <update id="updateSetting">
+        UPDATE websetting SET
+        web_status=#{web.webStatus},
+        web_title=#{web.webTitle},
+        web_domain_name=#{web.webDomainName},
+        web_logo_path=#{web.webLogoPath},
+        web_email=#{web.webEmail},
+        `language`=#{web.language}
+    </update>
+    <select id="selectSetting" resultMap="selectWeb">
+        SELECT web_status, web_title, web_domain_name, web_logo_path, web_email, `language` FROM websetting
+    </select>
+
+
+
+
+    <select id="selectAboutUs" resultType="java.lang.String">
+        select aboutus_content from aboutus
+    </select>
+    <update id="updateAboutUs" parameterType="java.lang.String">
+        update aboutus set aboutus_content = #{content}
+    </update>
+
+
+
+    <select id="selectService" resultType="java.lang.String">
+        select service_agreement_content from service_agreement
+    </select>
+    <update id="updateService" parameterType="java.lang.String">
+        update service_agreement set  service_agreement_content = #{content}
+    </update>
+
+
+    <select id="selectApiKey" resultType="java.lang.String">
+        select api_key from sms
+    </select>
+    <update id="updateApiKey" parameterType="java.lang.String">
+        update sms set  api_key = #{content}
+    </update>
+
+
+    <select id="selectEmail" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from email_smtp_setting
+    </select>
+    <update id="updateEmail" parameterType="com.sjx.hangduo.model.entity.Email">
+        update email_smtp_setting
+        <set>
+            <if test="SMTPEmail != null">
+                smtp_email = #{SMTPEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="SMTPServer != null">
+                smtp_server = #{SMTPServer,jdbcType=VARCHAR},
+            </if>
+            <if test="SMTPUsername != null">
+                smtp_username = #{SMTPUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="SMTPPassword != null">
+                smtp_password = #{SMTPPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="number != null">
+                `number` = #{number,jdbcType=INTEGER},
+            </if>
+            <if test="loginType != null">
+                login_type = #{loginType,jdbcType=VARCHAR},
+            </if>
+        </set>
+    </update>
+    <select id="selectAllFeedback" resultMap="selectFeedback">
+        select
+        <include refid="selectFeedback"/>
+        from feedback
+    </select>
+    <delete id="deleteFeedbackById">
+        delete from feedback where feedback_id = #{id}
+    </delete>
+</mapper>

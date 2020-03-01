@@ -1,0 +1,14 @@
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hangduo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT-8
+    username: root
+    password: 991023
+logging:
+  level:
+    root: info, wran
+  pattern:
+    file: '%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n'
+  file: /apps/logs/hdlog.log

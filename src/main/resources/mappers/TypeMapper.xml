@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjx.hangduo.dao.law.TypeMapper">
+
+    <resultMap id="selectTypeByTypeNum" type="com.sjx.hangduo.model.entity.Type">
+        <id property="id" column="id"/>
+        <result property="typeNum" column="type_num"/>
+        <result property="typeName" column="type_name"/>
+        <result property="topId" column="top_id"/>
+    </resultMap>
+
+    <select id="selectTypeByTopNum" resultMap="selectTypeByTypeNum">
+        select id, type_num, type_name, top_id from regulations_type where top_id = #{num}
+    </select>
+    <insert id="insertType" parameterType="com.sjx.hangduo.model.entity.Type">
+        insert into regulations_type
+        (type_num, type_name, top_id)
+        values
+        (#{type.typeNum}, #{type.typeName}, #{type.topId})
+    </insert>
+</mapper>

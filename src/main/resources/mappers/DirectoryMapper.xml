@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjx.hangduo.dao.law.DirectoryMapper">
+
+    <sql id="selectDir">
+        directory_id, directory_name, parent_id, `level`, regulations_foreign_key, distance_show_status
+    </sql>
+
+    <sql id="selectRegDir">
+        d.directory_id, d.directory_name, d.parent_id, d.`level`, d.regulations_foreign_key, r.regulations_id, r.regulations_name
+    </sql>
+    <resultMap id="selectDir" type="com.sjx.hangduo.model.entity.Directory">
+        <id property="directoryId" column="directory_id"/>
+        <result property="directoryName" column="directory_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="level" column="level"/>
+        <result property="regulationsForeignKey" column="regulations_foreign_key"/>
+        <result property="distanceShowStatus" column="distance_show_status"/>
+    </resultMap>
+
+    <resultMap id="selectRegDir" type="com.sjx.hangduo.model.vo.DirRegVO">
+        <result property="directoryId" column="directory_id"/>
+        <result property="directoryName" column="directory_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="level" column="level"/>
+        <result property="regulationsForeignKey" column="regulations_foreign_key"/>
+        <result property="regulationsId" column="regulations_id"/>
+        <result property="regulationsName" column="regulations_name"/>
+    </resultMap>
+
+    <select id="selectDirectoryByParentId" resultMap="selectDir">
+        select
+        <include refid="selectDir"/>
+        from directory where parent_id = #{parentId} and regulations_foreign_key = #{lawId}
+        order by `level` asc
+    </select>
+
+    <delete id="deleteDirByID">
+        DELETE FROM `directory` WHERE directory_id = #{id} OR parent_id = #{id}
+    </delete>
+    <select id="selectDirById" resultMap="selectRegDir">
+        select
+        <include refid="selectRegDir"/>,
+        r.regulations_name,
+        r.regulations_id
+        from `directory` d
+        JOIN regulations r ON d.regulations_foreign_key = r.regulations_id
+        where directory_id = #{id}
+    </select>
+    <select id="selectAllDir" resultMap="selectDir">
+        select directory_id, directory_name from `directory`
+        <if test="regId != null and regId != ''">
+            where regulations_foreign_key = #{regId}
+        </if>
+    </select>
+    <select id="selectDirByRegId" resultMap="selectDir">
+        select directory_id, directory_name from `directory` where regulations_foreign_key = #{regId}
+    </select>
+    <insert id="insertDir">
+        insert into `directory` (directory_name, parent_id, `level`, regulations_foreign_key)
+        values (#{dir.directoryName}, #{dir.parentId}, #{dir.level}, #{dir.regulationsForeignKey});
+    </insert>
+    <update id="updateDir">
+        update `directory` set
+        directory_name = #{newDir.directoryName},
+        parent_id = #{newDir.parentId},
+        `level` = #{newDir.level},
+        regulations_foreign_key = #{newDir.regulationsForeignKey}
+        where directory_id  = #{newDir.directoryId}
+    </update>
+</mapper>
